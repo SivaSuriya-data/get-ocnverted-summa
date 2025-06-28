@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  exam-converter:
+    build: .
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: unless-stopped
+
+  # Development service
+  exam-converter-dev:
+    build:
+      context: .
+      target: frontend-builder
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+    environment:
+      - NODE_ENV=development
+    profiles:
+      - dev
